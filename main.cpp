@@ -279,6 +279,7 @@ void CreateAccount(){
 		ofstream files(FileMap);
 		files.close();
 		Verify=1;
+		Logout=0;
 		ofstream UserLiIn("ListUser.txt",ios::app);
 		UserLiIn<<" "<<Username;
 		UserLiIn.close();
@@ -319,6 +320,10 @@ while(!menu){
 		clear();
 	}
 	if(Selection==4)exit(0);	
+	if(Selection==3){
+		fill(all(Level),0);
+		Logout=0;
+	}
 }
 
 void Login(){
@@ -349,6 +354,7 @@ void Login(){
 	}else{
 		clear();
 		mvprintw(2,2,"LOGIN SUCCESS");
+		Logout=0;
 		char ctmp;
 		while(!Account.eof()){
 		Account.get(ctmp);
@@ -407,7 +413,7 @@ while(!menu){
 			case KEY_UP: Select--; break;
 			case '\n':if(Level[Select]) menu=1;Selected=Select;break;
 			case KEY_RIGHT:if(Level[Select])menu=1;Selected=Select;break;
-			case ESC:menu=1;Game=1;Logout=1;Verify=0;break;
+			case ESC:menu=1;Game=0;Logout=1;Verify=0;break;
 		}
 		if(Selected==12)exit(0);
 		if(Select>12)Select=1;
@@ -574,12 +580,12 @@ void Draw(){
     mvprintw(Height+1,2,"Hi %s",Username);
     mvprintw(YB,XB," ");
     char chara;
-    mvprintw(Y,X,"§");        //CHARACTER!!
+    mvprintw(Y,X,"±");        //CHARACTER!!
 	wrefresh(win);
 }
 
 void TitleAnimation(){
-	attron(COLOR_PAIR(1));
+
 	FOR(Rep,0,Rep<120){
 		clear();
 	FOR(i,0,i<25){
@@ -590,18 +596,16 @@ void TitleAnimation(){
 	Sleep(30);
 	refresh();
 	}
-	attroff(COLOR_PAIR(1));
 }
 void Functions(){
-	start_color();
-	init_pair(1,COLOR_RED,COLOR_BLUE);
 	system("color 0B");
+	
 	CreateUser();
 	initscr();
-	Label:
 	TitleAnimation();
 	mvprintw(12,45,"PRESS ANY BUTTON TO START");
 	getch();
+	Label:
 	clear();
 	LoadingMenu();
 	if(Selection==1)while(!Verify)Login();
@@ -616,10 +620,10 @@ void Functions(){
 		if(Logout){
 			clear();
 			goto Label;
-		}
+			}
 		Setup();
     	clear();
-    	
+    			
 	while(!Game){
 		
 		Draw();
@@ -628,13 +632,14 @@ void Functions(){
 		Algorithm();
 		
 	}	
-			refresh();
+		refresh();
 		if(Quit) goto Start;
 		clear();
 		endwin();
 }
 
 main(){
+	
 	Back:
 	Functions();
 	return EXIT_SUCCESS;
